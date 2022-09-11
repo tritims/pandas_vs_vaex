@@ -3,7 +3,7 @@ from random import sample
 from pyJoules.energy_meter import measure_energy
 from pyJoules.handler.csv_handler import CSVHandler
 
-csv_handler = CSVHandler('trial_st_10.csv')
+csv_handler = CSVHandler('trial_drug_10.csv')
 import time
 import pandas as pd
 
@@ -152,50 +152,48 @@ def unique(df):
 # count, mean, min, max, value_counts, unique, sort values, groupby
 
 # Input output functions 
-#df = load_csv(path='../../Datasets/adult.csv')
-#df = load_json(path='../../Datasets/adult.json')
-#df = load_hdf(path='../../Datasets/adult.h5')
-#
-#save_csv(df, 'df.csv')
-#save_json(df, 'df.json')
-#save_hdf(df, 'df.h5', key='a')
+df = load_csv(path='../../Datasets/drugs.csv')
+df = load_json(path='../../Datasets/drugs.json')
+df = load_hdf(path='../../Datasets/drugs.h5')
+
+save_csv(df, 'df_drug.csv')
+save_json(df, 'df_drug.json')
+save_hdf(df, 'df_drug.h5', key='a')
 
 # --------------------------------------------------
 
 # Handling missing data
-#df = pd.read_csv('../../Datasets/adult.csv')
-#isna(df, cname='workclass')
-#dropna(df)
-#fillna(df, val='0')
-#replace(df, cname='workclass', src='?', dest='X')
+df = pd.read_csv('../../Datasets/drugs.csv')
+isna(df, cname='review')
+dropna(df)
+fillna(df, val='0')
+replace(df, cname='review', src='?', dest='X')
 
 # --------------------------------------------------
 # Table operations
-#df = pd.read_csv('../../Datasets/adult.csv')
-#df_samp = pd.read_csv('../../Datasets/adult.csv')
-#drop(df, cnameArray=['age', 'education'])
-#groupby(df, cname='workclass')
-#
-#SAMPLE_SIZE = 20000
-#df_samp = df.sample(SAMPLE_SIZE)
-#concat_dataframes(df, df_samp)
-#
-#sort(df, 'age')
-#merge(df, df_samp)
+#df = pd.read_csv('../../Datasets/drugs.csv')
+df_samp = pd.read_csv('../../Datasets/drugs.csv')
+drop(df, cnameArray=['drugName'])
+groupby(df, cname='rating')
+
+concat_dataframes(df, df_samp)
+
+sort(df, 'rating')
+merge(df, df_samp)
 
 # ------------------------------------------
 # Statistical operations
-df = pd.read_csv('../../Datasets/adult.csv')
+df = pd.read_csv('../../Datasets/drugs.csv')
 count(df)
-sum(df, 'capital.gain')
-mean(df['age'])
-min(df['capital.gain'])
-max(df['capital.gain'])
-unique(df['age'])
+sum(df, 'usefulCount')
+mean(df['rating'])
+min(df['usefulCount'])
+max(df['usefulCount'])
+unique(df['condition'])
 
 csv_handler.save_data()
 
-# df = load_csv(path='../../Datasets/adult.csv')
+# df = load_csv(path='../../Datasets/drugs.csv')
 # drop_column(df, col_names=['age', 'education', 'occupation'])
 
 
@@ -221,5 +219,3 @@ csv_handler.save_data()
 
 # col = ['capital.gain', 'capital.loss', 'hours.per.week']
 # # col = ['capital.gain', 'capital.loss']
-
-

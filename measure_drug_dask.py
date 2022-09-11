@@ -3,9 +3,10 @@ from random import sample
 from pyJoules.energy_meter import measure_energy
 from pyJoules.handler.csv_handler import CSVHandler
 
-csv_handler = CSVHandler('trial_st_10.csv')
+csv_handler = CSVHandler('trial_dask_drug_10.csv')
 import time
-import pandas as pd
+# import pandas as pd
+import dask.dataframe as pd
 
 # I/O functions - READ
 @measure_energy(handler=csv_handler)
@@ -13,12 +14,12 @@ def load_csv(path):
     return pd.read_csv(path)
 
 @measure_energy(handler=csv_handler)
-def load_hdf(path):
-    return pd.read_hdf(path)
+def load_hdf(path, key):
+    return pd.read_hdf(path, key=key)
 
 @measure_energy(handler=csv_handler)
 def load_json(path):
-    return pd.read_json(path)
+    return pd.read_json(path, orient=str)
 
 # I/O functions - WRITE
 @measure_energy(handler=csv_handler)
@@ -94,31 +95,31 @@ def concat_dataframes(df1, df2):
 # count 
 @measure_energy(handler=csv_handler)
 def count(df):
-    return df.count()
+    return df.count().compute()
 
 # sum
 @measure_energy(handler=csv_handler)
 def sum(df, cname):
-    return df[cname].sum()
+    return df[cname].sum().compute()
 
 # mean
 @measure_energy(handler=csv_handler)
 def mean(df):
-    return df.mean()
+    return df.mean().compute()
 
 # min
 @measure_energy(handler=csv_handler)
 def min(df):
-    return df.min()
+    return df.min().compute()
 # max
 @measure_energy(handler=csv_handler)
 def max(df):
-    return df.max()
+    return df.max().compute()
 
 # unique
 @measure_energy(handler=csv_handler)
 def unique(df):
-    return df.unique()
+    return df.unique().compute()
 
 # @measure_energy(handler=csv_handler)
 # def drop_column(df, col_names=[]):
@@ -152,46 +153,44 @@ def unique(df):
 # count, mean, min, max, value_counts, unique, sort values, groupby
 
 # Input output functions 
-#df = load_csv(path='../../Datasets/adult.csv')
-#df = load_json(path='../../Datasets/adult.json')
-#df = load_hdf(path='../../Datasets/adult.h5')
+df = load_csv(path='../../Datasets/drugs.csv')
+df = load_json(path='../../Datasets/drugs.json')
+#df = load_hdf(path='../../Datasets/drugs_dask.hdf', key='a')
 #
-#save_csv(df, 'df.csv')
-#save_json(df, 'df.json')
-#save_hdf(df, 'df.h5', key='a')
+save_csv(df, 'df.csv')
+save_json(df, 'df.json')
+#save_hdf(df, 'df.hdf', key='a')
 
 # --------------------------------------------------
 
 # Handling missing data
-#df = pd.read_csv('../../Datasets/adult.csv')
-#isna(df, cname='workclass')
-#dropna(df)
-#fillna(df, val='0')
-#replace(df, cname='workclass', src='?', dest='X')
+df = pd.read_csv('../../Datasets/drugs.csv')
+isna(df, cname='review')
+dropna(df)
+fillna(df, val='0')
+replace(df, cname='review', src='?', dest='X')
 
 # --------------------------------------------------
 # Table operations
-#df = pd.read_csv('../../Datasets/adult.csv')
-#df_samp = pd.read_csv('../../Datasets/adult.csv')
-#drop(df, cnameArray=['age', 'education'])
-#groupby(df, cname='workclass')
-#
-#SAMPLE_SIZE = 20000
-#df_samp = df.sample(SAMPLE_SIZE)
-#concat_dataframes(df, df_samp)
-#
-#sort(df, 'age')
-#merge(df, df_samp)
+df = pd.read_csv('../../Datasets/drugs.csv')
+df_samp = pd.read_csv('../../Datasets/drugs.csv')
+drop(df, cnameArray=['drugName'])
+groupby(df, cname='rating')
+
+concat_dataframes(df, df_samp)
+
+sort(df, 'rating')
+merge(df, df_samp)
 
 # ------------------------------------------
 # Statistical operations
-df = pd.read_csv('../../Datasets/adult.csv')
+df = pd.read_csv('../../Datasets/drugs.csv')
 count(df)
-sum(df, 'capital.gain')
-mean(df['age'])
-min(df['capital.gain'])
-max(df['capital.gain'])
-unique(df['age'])
+sum(df, 'usefulCount')
+mean(df['rating'])
+min(df['usefulCount'])
+max(df['usefulCount'])
+unique(df['condition'])
 
 csv_handler.save_data()
 
